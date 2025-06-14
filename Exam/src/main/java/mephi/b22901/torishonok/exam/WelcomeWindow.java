@@ -22,14 +22,11 @@ import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
@@ -40,20 +37,20 @@ import javax.swing.UIManager;
  * @author vikus
  */
 
+
 public class WelcomeWindow extends JFrame {
 
+    private final boolean isFileLoaded;
+
     // Цветовая палитра (зелёные оттенки)
-    private static final Color PRIMARY_COLOR = new Color(16, 185, 129);   // #10B981 — основной цвет
-    private static final Color PRIMARY_HOVER = new Color(5, 150, 105);    // #059669 — ховер
-    private static final Color SECONDARY_COLOR = new Color(240, 255, 244); // #F0FFF4 — фон второстепенной кнопки
-    private static final Color SECONDARY_HOVER = new Color(209, 250, 229); // #D1FAE5 — ховер
-    private static final Color TEXT_SECONDARY = new Color(72, 187, 120);  // #48BB78 — текст
+    private static final Color PRIMARY_COLOR = new Color(16, 185, 129);
 
     // Градиентный фон
-    private static final Color BACKGROUND_TOP = new Color(230, 252, 236); // #E6FCEC
-    private static final Color BACKGROUND_BOTTOM = new Color(200, 240, 215); // #C8F0D7
+    private static final Color BACKGROUND_TOP = new Color(230, 252, 236);
+    private static final Color BACKGROUND_BOTTOM = new Color(200, 240, 215);
 
-    public WelcomeWindow() {
+    public WelcomeWindow(boolean isFileLoaded) {
+        this.isFileLoaded = isFileLoaded;
         setupWindow();
         addComponents();
         setVisible(true);
@@ -105,7 +102,7 @@ public class WelcomeWindow extends JFrame {
     private JLabel createQuestionLabel() {
         JLabel label = new JLabel("Готовы начать работу?");
         label.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-        label.setForeground(TEXT_SECONDARY);
+        label.setForeground(new Color(72, 187, 120)); // TEXT_SECONDARY
         label.setBorder(BorderFactory.createEmptyBorder(0, 0, 30, 0));
         label.setAlignmentX(Component.CENTER_ALIGNMENT);
         return label;
@@ -115,8 +112,8 @@ public class WelcomeWindow extends JFrame {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 30, 0));
         panel.setOpaque(false);
 
-        JButton startButton = createStyledButton("Начать работу", PRIMARY_COLOR, PRIMARY_HOVER);
-        JButton exitButton = createStyledButton("Завершить работу", SECONDARY_COLOR, SECONDARY_HOVER);
+        JButton startButton = createStyledButton("Начать работу", PRIMARY_COLOR, new Color(5, 150, 105));
+        JButton exitButton = createStyledButton("Завершить работу", new Color(240, 255, 244), new Color(209, 250, 229));
         exitButton.setForeground(PRIMARY_COLOR);
 
         exitButton.addActionListener(e -> System.exit(0));
@@ -140,13 +137,10 @@ public class WelcomeWindow extends JFrame {
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         button.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
+            public void mouseEntered(MouseEvent evt) {
                 button.setBackground(hoverColor);
             }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
+            public void mouseExited(MouseEvent evt) {
                 button.setBackground(bgColor);
             }
         });
@@ -154,54 +148,46 @@ public class WelcomeWindow extends JFrame {
         return button;
     }
 
-    // Кастомное информационное окно
     private void showCustomInfoDialog() {
         JDialog dialog = new JDialog(this, "Информация", true);
         dialog.setSize(600, 400);
         dialog.setLocationRelativeTo(this);
-        dialog.setResizable(false);
         dialog.setLayout(new BorderLayout());
 
-        // Панель с градиентным фоном
         JPanel dialogPanel = new GradientPanel(new BorderLayout());
         dialogPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        // Иконка
         Icon systemIcon = UIManager.getIcon("OptionPane.informationIcon");
         JLabel iconLabel = new JLabel(systemIcon);
         iconLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 20));
 
-        // Текст сообщения
         JTextPane messagePane = new JTextPane();
         messagePane.setContentType("text/html");
-        messagePane.setText("<html><div style='font-family: Segoe UI; font-size: 16px; color: #111827;'>Вы успешно начали работу с программой. <br><br>" +
-                            "В следующем окне вы сможете выбрать тип расчёта:</div>" +
-                            "<ul style='margin-top: 10px; padding-left: 20px;'>" +
-                            "<li>Экономический расчёт</li>" +
-                            "<li>Радиационный расчёт</li>" +
-                            "</ul></html>");
+        if (isFileLoaded) {
+            messagePane.setText("<html><div style='font-family: Segoe UI; font-size: 16px; color: #111827;'>Файл успешно загружен.</div></html>");
+        } else {
+            messagePane.setText("<html><div style='font-family: Segoe UI; font-size: 16px; color: red;'>Ошибка загрузки файла или файл отсутствует.</div></html>");
+        }
+
         messagePane.setEditable(false);
         messagePane.setOpaque(false);
         messagePane.setBorder(BorderFactory.createEmptyBorder(10, 0, 20, 0));
 
-        // Панель с контентом
         JPanel textPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         textPanel.setOpaque(false);
         textPanel.add(iconLabel);
         textPanel.add(messagePane);
 
-        // Кнопки
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         buttonPanel.setOpaque(false);
 
-        JButton continueButton = createStyledButton("Продолжить", PRIMARY_COLOR, PRIMARY_HOVER);
-        JButton cancelButton = createStyledButton("Отмена", SECONDARY_COLOR, SECONDARY_HOVER);
+        JButton continueButton = createStyledButton("Продолжить", PRIMARY_COLOR, new Color(5, 150, 105));
+        JButton cancelButton = createStyledButton("Отмена", new Color(240, 255, 244), new Color(209, 250, 229));
         cancelButton.setForeground(PRIMARY_COLOR);
 
         continueButton.addActionListener(e -> {
             dialog.dispose();
-            // Здесь можно открыть следующее окно
-            JOptionPane.showMessageDialog(WelcomeWindow.this, "Переход к выбору типа расчёта...");
+            new SelectionWindow(); // Переход к выбору типа расчёта
         });
 
         cancelButton.addActionListener(e -> dialog.dispose());
@@ -216,7 +202,6 @@ public class WelcomeWindow extends JFrame {
         dialog.setVisible(true);
     }
 
-    // Панель с градиентным фоном
     static class GradientPanel extends JPanel {
         public GradientPanel(LayoutManager layout) {
             super(layout);

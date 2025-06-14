@@ -13,11 +13,9 @@ import javax.swing.SwingUtilities;
 public class Exam {
 
     public static void main(String[] args) {
-        // Запуск GUI в потоке обработки событий (Event Dispatch Thread)
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                new WelcomeWindow();
-            }
+        SwingUtilities.invokeLater(() -> {
+            boolean loaded = ExcelLoader.loadFileAutomatically();
+            new WelcomeWindow(loaded);
         });
     }
 }
