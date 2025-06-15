@@ -25,10 +25,10 @@ public class ExcelLoader {
         roomDataList.clear();
 
         try (Workbook workbook = new XSSFWorkbook(new FileInputStream("C:\\Users\\vikus\\Downloads\\Вар2_приложение1.xlsx"))) {
-            Sheet sheet = workbook.getSheetAt(0); // Первый лист
+            Sheet sheet = workbook.getSheetAt(0); // Лист1
 
             if (sheet == null) {
-                System.err.println("Лист не найден");
+                System.err.println("Лист 'Лист1' не найден.");
                 return false;
             }
 
@@ -37,6 +37,21 @@ public class ExcelLoader {
             for (Row row : sheet) {
                 if (!firstRowSkipped) {
                     firstRowSkipped = true;
+                    continue;
+                }
+
+                // Пропуск пустых строк
+                if (isRowEmpty(row)) {
+                    System.out.println("Пропущена пустая строка: " + row.getRowNum());
+                    continue;
+                }
+
+                // Пример: если первая ячейка не является числом и не содержит код помещения — это не данные о помещении
+                Cell potentialCodeCell = row.getCell(0);
+                if (potentialCodeCell == null || 
+                    (potentialCodeCell.getCellType() != CellType.NUMERIC && 
+                     !potentialCodeCell.getStringCellValue().matches("\\d+"))) {
+                    System.out.println("Пропущена незначимая строка: " + row.getRowNum());
                     continue;
                 }
 
@@ -87,6 +102,7 @@ public class ExcelLoader {
                             contaminationFloorArea, contaminationFloorDepth,
                             radiationDoseRate, volumetricActivity
                     ));
+
                 } catch (Exception e) {
                     System.err.println("Ошибка при чтении строки: " + row.getRowNum());
                     continue;
@@ -114,9 +130,28 @@ public class ExcelLoader {
     }
 
     private static double getNumericValue(Cell cell) {
-        if (cell == null || cell.getCellType() != CellType.NUMERIC) {
-            return 0.0;
+        if (cell == null) return 0.0;
+        if (cell.getCellType() != CellType.NUMERIC) {
+            try {
+                return Double.parseDouble(getStringValue(cell).replaceAll(",", "."));
+            } catch (NumberFormatException e) {
+                return 0.0;
+            }
         }
         return cell.getNumericCellValue();
+    }
+
+    // Метод для определения пустой строки
+    private static boolean isRowEmpty(Row row) {
+        if (row == null) return true;
+
+        for (int i = 0; i < 20; i++) { // Проверяем первые 20 колонок
+            Cell cell = row.getCell(i);
+            if (cell != null && cell.getCellType() != CellType.BLANK &&
+                !(cell.getCellType() == CellType.STRING && cell.getStringCellValue().trim().isEmpty())) {
+                return false;
+            }
+        }
+        return true;
     }
 }

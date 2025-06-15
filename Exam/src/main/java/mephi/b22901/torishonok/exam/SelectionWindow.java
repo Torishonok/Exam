@@ -22,7 +22,6 @@ import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -35,15 +34,13 @@ import javax.swing.SwingConstants;
  */
 
 
+
 public class SelectionWindow extends JFrame {
 
-    // Цветовая палитра (берём из WelcomeWindow)
-    private static final Color PRIMARY_COLOR = new Color(16, 185, 129);   // #10B981 — основной цвет
-    private static final Color PRIMARY_HOVER = new Color(5, 150, 105);    // #059669 — ховер
-    private static final Color BACKGROUND_TOP = new Color(230, 252, 236); // #E6FCEC
-    private static final Color BACKGROUND_BOTTOM = new Color(200, 240, 215); // #C8F0D7
+    private final AppTheme theme;
 
-    public SelectionWindow() {
+    public SelectionWindow(AppTheme theme) {
+        this.theme = theme;
         setupWindow();
         addComponents();
         setVisible(true);
@@ -56,13 +53,12 @@ public class SelectionWindow extends JFrame {
         setLocationRelativeTo(null);
         setResizable(false);
 
-        // Панель с градиентным фоном
-        JPanel backgroundPanel = new GradientPanel(new BorderLayout());
+        // Градиентная панель с темой
+        JPanel backgroundPanel = new GradientPanel(new BorderLayout(), theme);
         setContentPane(backgroundPanel);
     }
 
     private void addComponents() {
-        // Центральная панель с контентом
         JPanel contentPanel = new JPanel(new GridBagLayout());
         contentPanel.setOpaque(false);
 
@@ -83,7 +79,7 @@ public class SelectionWindow extends JFrame {
     private JLabel createTitleLabel() {
         JLabel label = new JLabel("<html><div style='text-align: center;'>Выберите тип расчёта</div></html>", SwingConstants.CENTER);
         label.setFont(new Font("Segoe UI Semibold", Font.BOLD, 36));
-        label.setForeground(PRIMARY_COLOR);
+        label.setForeground(theme.getPrimaryColor());
         label.setBorder(BorderFactory.createEmptyBorder(0, 0, 60, 0));
         return label;
     }
@@ -92,29 +88,29 @@ public class SelectionWindow extends JFrame {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 50, 30));
         panel.setOpaque(false);
 
-        JButton economicButton = createStyledButton("Экономический расчёт");
-        JButton radiationButton = createStyledButton("Радиационный расчёт");
+        JButton economicButton = createStyledButton("Экономический расчёт", AppThemes.GREEN);
+        JButton radiationButton = createStyledButton("Радиационный расчёт", AppThemes.GREEN);
 
-        economicButton.addActionListener(e -> openWorkUploader("Экономический", AppThemes.YELLOW));
-        radiationButton.addActionListener(e -> openWorkUploader("Радиационный", AppThemes.ORANGE));
+        economicButton.addActionListener(e -> openWorkUploader("Экономический", AppThemes.GREEN));
+        radiationButton.addActionListener(e -> openWorkUploader("Радиационный", AppThemes.GREEN));
 
         panel.add(economicButton);
         panel.add(radiationButton);
 
         return panel;
     }
-    
-    private void openWorkUploader(String calculationType, AppTheme theme) {
-    dispose(); // закрываем текущее окно
-    new WorkUploader(calculationType, theme); // открываем окно загрузки файла
-}
 
-    private JButton createStyledButton(String text) {
+    private void openWorkUploader(String calculationType, AppTheme theme) {
+        dispose(); // закрываем текущее окно
+        new WorkUploader(calculationType, theme); // открываем загрузку файла с нужной темой
+    }
+
+    private JButton createStyledButton(String text, AppTheme buttonTheme) {
         JButton button = new JButton(text);
         button.setPreferredSize(new Dimension(250, 60));
         button.setFont(new Font("Segoe UI Semibold", Font.BOLD, 18));
         button.setForeground(Color.WHITE);
-        button.setBackground(PRIMARY_COLOR);
+        button.setBackground(buttonTheme.getPrimaryColor());
         button.setFocusPainted(false);
         button.setBorder(BorderFactory.createEmptyBorder(10, 25, 10, 25));
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -122,24 +118,27 @@ public class SelectionWindow extends JFrame {
         button.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                button.setBackground(PRIMARY_HOVER);
+                button.setBackground(buttonTheme.getPrimaryHover());
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                button.setBackground(PRIMARY_COLOR);
+                button.setBackground(buttonTheme.getPrimaryColor());
             }
         });
 
         return button;
     }
 
-    
-
-    // Внутренний класс для градиентного фона
+    // Градиентная панель — принимает theme через конструктор
     static class GradientPanel extends JPanel {
-        public GradientPanel(LayoutManager layout) {
+        private final Color backgroundTop;
+        private final Color backgroundBottom;
+
+        public GradientPanel(LayoutManager layout, AppTheme theme) {
             super(layout);
+            this.backgroundTop = theme.getBackgroundTop();
+            this.backgroundBottom = theme.getBackgroundBottom();
             setOpaque(false);
         }
 
@@ -151,8 +150,8 @@ public class SelectionWindow extends JFrame {
             int height = getHeight();
 
             GradientPaint gp = new GradientPaint(
-                    0, 0, BACKGROUND_TOP,
-                    0, height, BACKGROUND_BOTTOM
+                    0, 0, backgroundTop,
+                    0, height, backgroundBottom
             );
 
             g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
