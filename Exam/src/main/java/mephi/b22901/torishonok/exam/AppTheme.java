@@ -10,8 +10,9 @@ package mephi.b22901.torishonok.exam;
  */
 import java.awt.*;
 
-public class AppTheme {
+import java.awt.Color;
 
+public class AppTheme {
     private final Color primaryColor;
     private final Color primaryHover;
     private final Color backgroundTop;
@@ -24,19 +25,8 @@ public class AppTheme {
         this.backgroundBottom = backgroundBottom;
     }
 
-    public Color getPrimaryColor() {
-        return primaryColor;
-    }
-
-    public Color getPrimaryHover() {
-        return primaryHover;
-    }
-
-    public Color getBackgroundTop() {
-        return backgroundTop;
-    }
-
-    public Color getBackgroundBottom() {
-        return backgroundBottom;
-    }
+    public Color getPrimaryColor() { return primaryColor; }
+    public Color getPrimaryHover() { return primaryHover; }
+    public Color getBackgroundTop() { return backgroundTop; }
+    public Color getBackgroundBottom() { return backgroundBottom; }
 }

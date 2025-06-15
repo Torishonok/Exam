@@ -1,23 +1,25 @@
+package mephi.b22901.torishonok.exam;
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package mephi.b22901.torishonok.exam;
 
 /**
  *
  * @author vikus
  */
 import javax.swing.*;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class ActionWindow extends JFrame {
+public class WorkDataMenuWindow extends JFrame {
 
     private final String calculationType;
     private final AppTheme theme;
 
-    public ActionWindow(String calculationType, AppTheme theme) {
+    public WorkDataMenuWindow(String calculationType, AppTheme theme) {
         this.calculationType = calculationType;
         this.theme = theme;
         setupWindow();
@@ -32,7 +34,8 @@ public class ActionWindow extends JFrame {
         setLocationRelativeTo(null);
         setResizable(false);
 
-        JPanel backgroundPanel = new GradientPanel(new BorderLayout());
+        // Передаем theme в GradientPanel
+        JPanel backgroundPanel = new GradientPanel(new BorderLayout(), theme);
         setContentPane(backgroundPanel);
     }
 
@@ -47,7 +50,7 @@ public class ActionWindow extends JFrame {
         gbc.gridy = 0;
         contentPanel.add(titleLabel, gbc);
 
-        Component buttonsPanel = createButtonsPanel();
+        Component buttonsPanel = createButtonsPanel(theme); // ← передаем theme
         gbc.gridy = 1;
         contentPanel.add(buttonsPanel, gbc);
 
@@ -55,32 +58,40 @@ public class ActionWindow extends JFrame {
     }
 
     private JLabel createTitleLabel() {
-        JLabel label = new JLabel("<html><div style='text-align: center;'>Выберите действие для<br>" + calculationType + " расчёта</div></html>", SwingConstants.CENTER);
+        JLabel label = new JLabel("<html><div style='text-align: center;'>Выберите действие для<br>" +
+                calculationType + " расчёта</div></html>", SwingConstants.CENTER);
         label.setFont(new Font("Segoe UI Semibold", Font.BOLD, 36));
         label.setForeground(theme.getPrimaryColor());
         label.setBorder(BorderFactory.createEmptyBorder(0, 0, 60, 0));
         return label;
     }
 
-    private Component createButtonsPanel() {
+    private Component createButtonsPanel(AppTheme theme) {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 50, 30));
         panel.setOpaque(false);
 
-        JButton viewButton = createStyledButton("Просмотр данных по объекту");
-        JButton uploadButton = createStyledButton("Загрузить файл с проводимыми работами");
+        JButton viewObjectButton = createStyledButton("Просмотр данных по объекту", theme);
+        JButton viewWorksButton = createStyledButton("Просмотр данных по проводимым работам", theme);
+        JButton viewElementsButton = createStyledButton("Просмотр элементов с привязкой работ", theme);
+        JButton calculateButton = createStyledButton("Расчёт интегральных показателей", theme);
 
-        viewButton.addActionListener(e -> new DataViewer());
-        uploadButton.addActionListener(e -> new WorkUploader(calculationType, theme));
+        // Обработчики событий
+        viewObjectButton.addActionListener(e -> new DataViewer());
+        viewWorksButton.addActionListener(e -> new WorkViewer());
+        viewElementsButton.addActionListener(e -> new ElementWorkViewer());
+        calculateButton.addActionListener(e -> new IntegralCalculator());
 
-        panel.add(viewButton);
-        panel.add(uploadButton);
+        panel.add(viewObjectButton);
+        panel.add(viewWorksButton);
+        panel.add(viewElementsButton);
+        panel.add(calculateButton);
 
         return panel;
     }
 
-    private JButton createStyledButton(String text) {
+    private JButton createStyledButton(String text, AppTheme theme) {
         JButton button = new JButton(text);
-        button.setPreferredSize(new Dimension(300, 60));
+        button.setPreferredSize(new Dimension(350, 60));
         button.setFont(new Font("Segoe UI Semibold", Font.BOLD, 18));
         button.setForeground(Color.WHITE);
         button.setBackground(theme.getPrimaryColor());
@@ -103,10 +114,15 @@ public class ActionWindow extends JFrame {
         return button;
     }
 
-    // Градиентная панель
-    class GradientPanel extends JPanel {
-        public GradientPanel(LayoutManager layout) {
+    // Градиентная панель — статическая, принимает theme через конструктор
+    static class GradientPanel extends JPanel {
+        private final Color backgroundTop;
+        private final Color backgroundBottom;
+
+        public GradientPanel(LayoutManager layout, AppTheme theme) {
             super(layout);
+            this.backgroundTop = theme.getBackgroundTop();
+            this.backgroundBottom = theme.getBackgroundBottom();
             setOpaque(false);
         }
 
@@ -118,8 +134,8 @@ public class ActionWindow extends JFrame {
             int height = getHeight();
 
             GradientPaint gp = new GradientPaint(
-                    0, 0, theme.getBackgroundTop(),
-                    0, height, theme.getBackgroundBottom()
+                    0, 0, backgroundTop,
+                    0, height, backgroundBottom
             );
 
             g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);

@@ -14,7 +14,7 @@ public class Exam {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            boolean loaded = ExcelLoader.loadFileAutomatically();
+            boolean loaded = ExcelLoader.loadExcelFile();
             new WelcomeWindow(loaded);
         });
     }

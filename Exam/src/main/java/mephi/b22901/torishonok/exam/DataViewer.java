@@ -48,7 +48,7 @@ public class DataViewer extends JFrame {
 
         String[] columns = {
                 "Код помещения",
-                "Название",
+                "Помещение",
                 "Расположение",
                 "Длина",
                 "Ширина",
@@ -63,6 +63,27 @@ public class DataViewer extends JFrame {
         JTable table = new JTable(tableData, columns);
         JScrollPane scrollPane = new JScrollPane(table);
         panel.add(scrollPane, BorderLayout.CENTER);
+
+        JButton nextButton = new JButton("Продолжить");
+        nextButton.setPreferredSize(new Dimension(200, 40));
+        nextButton.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        nextButton.setBackground(new Color(16, 185, 129));
+        nextButton.setForeground(Color.WHITE);
+        nextButton.setFocusPainted(false);
+        nextButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        nextButton.addActionListener(e -> new ProjectActionWindow(new AppTheme(
+                new Color(16, 185, 129),
+                new Color(5, 150, 105),
+                new Color(230, 252, 236),
+                new Color(200, 240, 215)
+        )));
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        buttonPanel.setBackground(Color.WHITE);
+        buttonPanel.add(nextButton);
+
+        panel.add(buttonPanel, BorderLayout.SOUTH);
 
         add(panel);
         setVisible(true);
