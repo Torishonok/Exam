@@ -68,7 +68,7 @@ public class ProjectActionWindow extends JFrame {
         JButton calculateButton = createStyledButton("Расчёт интегральных показателей");
 
         viewElementsButton.addActionListener(e -> new ElementWorkViewer());
-        calculateButton.addActionListener(e -> new IntegralCalculator());
+        calculateButton.addActionListener(e -> new IntegralCalculator(theme));
 
         panel.add(viewElementsButton);
         panel.add(calculateButton);
@@ -125,4 +125,5 @@ public class ProjectActionWindow extends JFrame {
             g2d.fillRect(0, 0, width, height);
         }
     }
+    
 }

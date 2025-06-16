@@ -9,19 +9,22 @@ package mephi.b22901.torishonok.exam;
  *
  * @author vikus
  */
-import javax.swing.*;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.List;
 
 public class WorkDataMenuWindow extends JFrame {
 
     private final String calculationType;
     private final AppTheme theme;
+    private static String currentCalculationType;
 
     public WorkDataMenuWindow(String calculationType, AppTheme theme) {
         this.calculationType = calculationType;
         this.theme = theme;
+        currentCalculationType = calculationType;
         setupWindow();
         addComponents();
         setVisible(true);
@@ -34,9 +37,12 @@ public class WorkDataMenuWindow extends JFrame {
         setLocationRelativeTo(null);
         setResizable(false);
 
-        // Передаем theme в GradientPanel
         JPanel backgroundPanel = new GradientPanel(new BorderLayout(), theme);
         setContentPane(backgroundPanel);
+    }
+    
+    public static String getCurrentCalculationTypeStatic() {
+        return currentCalculationType;
     }
 
     private void addComponents() {
@@ -50,7 +56,7 @@ public class WorkDataMenuWindow extends JFrame {
         gbc.gridy = 0;
         contentPanel.add(titleLabel, gbc);
 
-        Component buttonsPanel = createButtonsPanel(theme); // ← передаем theme
+        Component buttonsPanel = createButtonsPanel(theme);
         gbc.gridy = 1;
         contentPanel.add(buttonsPanel, gbc);
 
@@ -66,21 +72,39 @@ public class WorkDataMenuWindow extends JFrame {
         return label;
     }
 
-    private Component createButtonsPanel(AppTheme theme) {
+    private Component createButtonsPanel(AppTheme buttonTheme) {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 50, 30));
         panel.setOpaque(false);
 
-        JButton viewObjectButton = createStyledButton("Просмотр данных по объекту", theme);
-        JButton viewWorksButton = createStyledButton("Просмотр данных по проводимым работам", theme);
-        JButton viewElementsButton = createStyledButton("Просмотр элементов с привязкой работ", theme);
-        JButton calculateButton = createStyledButton("Расчёт интегральных показателей", theme);
+        JButton viewObjectButton = createStyledButton("Просмотр данных по объекту", buttonTheme);
+        JButton viewWorksButton = createStyledButton("Просмотр данных по проводимым работам", buttonTheme);
+        JButton viewElementsButton = createStyledButton("Просмотр элементов с привязкой работ", buttonTheme);
+        JButton calculateButton = createStyledButton("Расчёт интегральных показателей", buttonTheme);
 
-        // Обработчики событий
+        // Просмотр данных всегда доступен
         viewObjectButton.addActionListener(e -> new DataViewer());
         viewWorksButton.addActionListener(e -> new WorkViewer());
-        viewElementsButton.addActionListener(e -> new ElementWorkViewer());
-        calculateButton.addActionListener(e -> new IntegralCalculator());
 
+        // Логика разрешения действий
+        if ("Экономический".equals(calculationType)) {
+            // Экономический → можно интегральный расчёт, нельзя элементы с привязкой
+            viewElementsButton.setEnabled(false);
+            viewElementsButton.setBackground(buttonTheme.getPrimaryColor().darker());
+            calculateButton.addActionListener(e -> new IntegralCalculator(theme));
+        } else if ("Радиационный".equals(calculationType)) {
+            // Радиационный → можно элементы с привязкой, нельзя интегральный расчёт
+            viewElementsButton.addActionListener(e -> new ElementWorkViewer());
+            calculateButton.setEnabled(false);
+            calculateButton.setBackground(buttonTheme.getPrimaryColor().darker());
+        } else {
+            // На случай других значений (необязательно)
+            viewElementsButton.setEnabled(false);
+            calculateButton.setEnabled(false);
+        }
+        
+        
+
+        // Добавляем кнопки
         panel.add(viewObjectButton);
         panel.add(viewWorksButton);
         panel.add(viewElementsButton);
@@ -114,7 +138,7 @@ public class WorkDataMenuWindow extends JFrame {
         return button;
     }
 
-    // Градиентная панель — статическая, принимает theme через конструктор
+    // Градиентная панель
     static class GradientPanel extends JPanel {
         private final Color backgroundTop;
         private final Color backgroundBottom;

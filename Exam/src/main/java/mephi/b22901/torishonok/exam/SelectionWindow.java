@@ -32,11 +32,7 @@ import javax.swing.SwingConstants;
  *
  * @author vikus
  */
-
-
-
 public class SelectionWindow extends JFrame {
-
     private final AppTheme theme;
 
     public SelectionWindow(AppTheme theme) {
@@ -48,14 +44,10 @@ public class SelectionWindow extends JFrame {
 
     private void setupWindow() {
         setTitle("Выбор типа расчёта");
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(900, 500);
         setLocationRelativeTo(null);
-        setResizable(false);
-
-        // Градиентная панель с темой
-        JPanel backgroundPanel = new GradientPanel(new BorderLayout(), theme);
-        setContentPane(backgroundPanel);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setContentPane(new GradientPanel(new BorderLayout(), theme));
     }
 
     private void addComponents() {
@@ -100,14 +92,9 @@ public class SelectionWindow extends JFrame {
         return panel;
     }
 
-    private void openWorkUploader(String calculationType, AppTheme theme) {
-        dispose(); // закрываем текущее окно
-        new WorkUploader(calculationType, theme); // открываем загрузку файла с нужной темой
-    }
-
     private JButton createStyledButton(String text, AppTheme buttonTheme) {
         JButton button = new JButton(text);
-        button.setPreferredSize(new Dimension(250, 60));
+        button.setPreferredSize(new Dimension(300, 60));
         button.setFont(new Font("Segoe UI Semibold", Font.BOLD, 18));
         button.setForeground(Color.WHITE);
         button.setBackground(buttonTheme.getPrimaryColor());
@@ -130,7 +117,12 @@ public class SelectionWindow extends JFrame {
         return button;
     }
 
-    // Градиентная панель — принимает theme через конструктор
+    private void openWorkUploader(String calculationType, AppTheme theme) {
+        dispose();
+        new WorkUploader(calculationType, theme);
+    }
+
+    // Градиентная панель
     static class GradientPanel extends JPanel {
         private final Color backgroundTop;
         private final Color backgroundBottom;

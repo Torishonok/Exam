@@ -31,6 +31,17 @@ public class ElementWorkViewer extends JFrame {
             JOptionPane.showMessageDialog(this, "Данные не загружены.", "Ошибка", JOptionPane.ERROR_MESSAGE);
             return;
         }
+        
+        // Если тип расчёта не экономический — не разрешаем открытие
+        if (!"Радиационный".equals(WorkDataMenuWindow.getCurrentCalculationTypeStatic())) {
+            JOptionPane.showMessageDialog(this,
+                    "Доступно только в радиационном расчёте",
+                    "Ошибка", JOptionPane.WARNING_MESSAGE);
+            dispose();
+            return;
+        }
+        
+        
 
         // Связываем комнаты с работами
         StringBuilder sb = new StringBuilder();

@@ -24,7 +24,7 @@ public class ExcelLoader {
     public static boolean loadExcelFile() {
         roomDataList.clear();
 
-        try (Workbook workbook = new XSSFWorkbook(new FileInputStream("C:\\Users\\vikus\\Downloads\\Вар2_приложение1.xlsx"))) {
+        try (Workbook workbook = new XSSFWorkbook(new FileInputStream("C:\\Users\\vikus\\OneDrive\\Документы\\GitHub\\Exam\\Exam\\resorces\\Вар2_приложение1.xlsx"))) {
             Sheet sheet = workbook.getSheetAt(0); // Лист1
 
             if (sheet == null) {
