@@ -81,30 +81,30 @@ public class WorkDataMenuWindow extends JFrame {
         JButton viewElementsButton = createStyledButton("Просмотр элементов с привязкой работ", buttonTheme);
         JButton calculateButton = createStyledButton("Расчёт интегральных показателей", buttonTheme);
 
-        // Просмотр данных всегда доступен
+        
         viewObjectButton.addActionListener(e -> new DataViewer());
         viewWorksButton.addActionListener(e -> new WorkViewer());
 
-        // Логика разрешения действий
+        
         if ("Экономический".equals(calculationType)) {
-            // Экономический → можно интегральный расчёт, нельзя элементы с привязкой
+            
             viewElementsButton.setEnabled(false);
             viewElementsButton.setBackground(buttonTheme.getPrimaryColor().darker());
             calculateButton.addActionListener(e -> new IntegralCalculator(theme));
         } else if ("Радиационный".equals(calculationType)) {
-            // Радиационный → можно элементы с привязкой, нельзя интегральный расчёт
+            
             viewElementsButton.addActionListener(e -> new ElementWorkViewer());
             calculateButton.setEnabled(false);
             calculateButton.setBackground(buttonTheme.getPrimaryColor().darker());
         } else {
-            // На случай других значений (необязательно)
+            
             viewElementsButton.setEnabled(false);
             calculateButton.setEnabled(false);
         }
         
         
 
-        // Добавляем кнопки
+        
         panel.add(viewObjectButton);
         panel.add(viewWorksButton);
         panel.add(viewElementsButton);
@@ -138,7 +138,7 @@ public class WorkDataMenuWindow extends JFrame {
         return button;
     }
 
-    // Градиентная панель
+   
     static class GradientPanel extends JPanel {
         private final Color backgroundTop;
         private final Color backgroundBottom;

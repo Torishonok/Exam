@@ -53,11 +53,11 @@ public class WorkUploader extends JFrame {
     }
 
     private void openActionWindow() {
-        dispose(); // закрываем текущее окно
-        new WorkDataMenuWindow(calculationType, theme); // открываем следующее окно
+        dispose(); 
+        new WorkDataMenuWindow(calculationType, theme); 
     }
 
-    // Градиентная панель
+    
     static class GradientPanel extends JPanel {
         private final Color backgroundTop;
         private final Color backgroundBottom;

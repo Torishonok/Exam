@@ -4,18 +4,14 @@
  */
 package mephi.b22901.torishonok.exam;
 
+import java.awt.Color;
+import java.util.List;
+import org.apache.commons.math3.distribution.NormalDistribution;
+
 /**
  *
  * @author vikus
  */
-import java.awt.Color;
-import org.apache.commons.math3.distribution.NormalDistribution;
-
-import java.util.List;
-
-import org.apache.commons.math3.distribution.NormalDistribution;
-import javax.swing.*;
-import java.util.List;
 
 public class MonteCarloDoseCalculator {
 
@@ -72,8 +68,8 @@ public class MonteCarloDoseCalculator {
         }
 
         // Показываем гистограммы
-        HistogramWindow.showHistogram(collectiveDoses, "Коллективная доза", "Доза (мкЗв)", new Color(249, 113, 24));
-        HistogramWindow.showHistogram(individualDoses, "Индивидуальная доза", "Доза (мкЗв)", new Color(16, 185, 129));
+        HistogramWindow.showHistogram(collectiveDoses, "Коллективная доза", "Доза (мкЗв)", Color.BLUE);
+        HistogramWindow.showHistogram(individualDoses, "Индивидуальная доза", "Доза (мкЗв)", Color.GREEN);
     }
 
     private double generateNormalRandom(double mean, double stdDev) {

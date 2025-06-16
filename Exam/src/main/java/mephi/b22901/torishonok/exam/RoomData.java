@@ -80,7 +80,6 @@ public class RoomData {
         this.volumetricActivity = volumetricActivity;
     }
 
-    // Геттеры
 
     public String getRoomCode() { return roomCode; }
     public String getRoomName() { return roomName; }

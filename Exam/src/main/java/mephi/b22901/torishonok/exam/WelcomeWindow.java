@@ -148,7 +148,7 @@ public class WelcomeWindow extends JFrame {
 
         continueButton.addActionListener(e -> {
             dialog.dispose();
-            new SelectionWindow(theme); // Переход к загрузке файла с работами
+            new SelectionWindow(theme); 
         });
         cancelButton.addActionListener(e -> dialog.dispose());
 
@@ -162,7 +162,7 @@ public class WelcomeWindow extends JFrame {
         dialog.setVisible(true);
     }
 
-    // Градиентная панель
+    
     static class GradientPanel extends JPanel {
         public GradientPanel(LayoutManager layout) {
             super(layout);

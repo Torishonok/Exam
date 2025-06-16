@@ -17,7 +17,7 @@ import java.util.List;
 
 public class IntegralCalculator extends JFrame {
 
-    private static final double PRICE_L = 500; // Трудовая стоимость на человека·час
+    private static final double PRICE_L = 500; 
     private final AppTheme theme;
     
 
@@ -57,21 +57,20 @@ public class IntegralCalculator extends JFrame {
             RoomData room = findRoomByCode(roomList, work.getRoomCode());
             if (room == null) continue;
 
-            double mdi = room.getRadiationDoseRate(); // Мощность дозы
-            double hv = work.getTimeNorm();         // Норма времени
-            int kr = work.getWorkersCount();        // Число работников
+            double mdi = room.getRadiationDoseRate();
+            double hv = work.getTimeNorm();         
+            int kr = work.getWorkersCount();        
             String workType = work.getWorkType().trim().toLowerCase();
-            double price_c = work.getPrice();       // Цена работы
-            double pr = getWorkArea(work, room);     // Площадь обработки
-            double gr = getAverageContaminationDepth(room, work); // Глубина загрязнения
-
+            double price_c = work.getPrice();       
+            double pr = getWorkArea(work, room);     
+            double gr = getAverageContaminationDepth(room, work); 
             double time;
             double cost;
 
             if ("поверхностная".equalsIgnoreCase(workType)) {
                 time = hv / kr * pr;
                 cost = price_c * pr + time * kr * PRICE_L;
-            } else if ("с кол".equalsIgnoreCase(workType)) {
+            } else if ("скол".equalsIgnoreCase(workType)) {
                 int ceilDepth = (int) Math.ceil(gr / 10.0);
                 time = hv / kr * pr * ceilDepth;
                 cost = price_c * pr * ceilDepth + time * kr * PRICE_L;
@@ -89,7 +88,6 @@ public class IntegralCalculator extends JFrame {
             totalWorkers += kr;
         }
 
-        // Отображение результатов
         JLabel costLabel = new JLabel(String.format("a. Стоимость проекта: %.2f руб.", totalCost));
         JLabel timeLabel = new JLabel(String.format("b. Общее время выполнения: %.2f ч", totalTime));
         JLabel doseCollectiveLabel = new JLabel(String.format("c. Коллективная эквивалентная доза: %.2f мкЗв", collectiveDose));
@@ -114,7 +112,6 @@ public class IntegralCalculator extends JFrame {
         panel.add(Box.createRigidArea(new Dimension(0, 10)));
         panel.add(doseIndividualLabel);
 
-        // Кнопка для симуляции Монте-Карло (только в радиационном режиме)
         if ("Радиационный".equals(WorkDataMenuWindow.getCurrentCalculationTypeStatic())) {
             JButton histogramButton = createStyledButton("Показать гистограммы", theme);
             histogramButton.addActionListener(e -> {
@@ -131,7 +128,6 @@ public class IntegralCalculator extends JFrame {
         setVisible(true);
     }
 
-    // Статический метод для поиска помещения
     public static RoomData findRoomByCode(List<RoomData> rooms, String code) {
         for (RoomData r : rooms) {
             if (r.getRoomCode().equals(code)) {
@@ -141,7 +137,6 @@ public class IntegralCalculator extends JFrame {
         return null;
     }
 
-    // Статический метод для получения площади
     public static double getWorkArea(WorkData work, RoomData room) {
         String part = work.getPart().toLowerCase();
         if (part.contains("стен")) {
@@ -154,7 +149,6 @@ public class IntegralCalculator extends JFrame {
         return 0;
     }
 
-    // Статический метод для глубины загрязнения
     public static double getAverageContaminationDepth(RoomData room, WorkData work) {
         String part = work.getPart().toLowerCase();
         if (part.contains("стен")) {
@@ -167,7 +161,7 @@ public class IntegralCalculator extends JFrame {
         return 0;
     }
 
-    // Метод создания кнопки
+    
     private JButton createStyledButton(String text, AppTheme theme) {
         JButton button = new JButton(text);
         button.setPreferredSize(new Dimension(250, 40));

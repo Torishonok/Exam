@@ -122,7 +122,7 @@ public class SelectionWindow extends JFrame {
         new WorkUploader(calculationType, theme);
     }
 
-    // Градиентная панель
+    
     static class GradientPanel extends JPanel {
         private final Color backgroundTop;
         private final Color backgroundBottom;

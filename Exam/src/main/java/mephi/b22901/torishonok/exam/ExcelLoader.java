@@ -25,8 +25,7 @@ public class ExcelLoader {
         roomDataList.clear();
 
         try (Workbook workbook = new XSSFWorkbook(new FileInputStream("C:\\Users\\vikus\\OneDrive\\Документы\\GitHub\\Exam\\Exam\\resorces\\Вар2_приложение1.xlsx"))) {
-            Sheet sheet = workbook.getSheetAt(0); // Лист1
-
+            Sheet sheet = workbook.getSheetAt(0); 
             if (sheet == null) {
                 System.err.println("Лист 'Лист1' не найден.");
                 return false;
@@ -40,13 +39,13 @@ public class ExcelLoader {
                     continue;
                 }
 
-                // Пропуск пустых строк
+                
                 if (isRowEmpty(row)) {
                     System.out.println("Пропущена пустая строка: " + row.getRowNum());
                     continue;
                 }
 
-                // Пример: если первая ячейка не является числом и не содержит код помещения — это не данные о помещении
+                
                 Cell potentialCodeCell = row.getCell(0);
                 if (potentialCodeCell == null || 
                     (potentialCodeCell.getCellType() != CellType.NUMERIC && 
@@ -141,11 +140,11 @@ public class ExcelLoader {
         return cell.getNumericCellValue();
     }
 
-    // Метод для определения пустой строки
+    
     private static boolean isRowEmpty(Row row) {
         if (row == null) return true;
 
-        for (int i = 0; i < 20; i++) { // Проверяем первые 20 колонок
+        for (int i = 0; i < 20; i++) { 
             Cell cell = row.getCell(i);
             if (cell != null && cell.getCellType() != CellType.BLANK &&
                 !(cell.getCellType() == CellType.STRING && cell.getStringCellValue().trim().isEmpty())) {

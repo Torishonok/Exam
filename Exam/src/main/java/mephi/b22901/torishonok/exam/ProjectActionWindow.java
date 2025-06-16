@@ -101,7 +101,7 @@ public class ProjectActionWindow extends JFrame {
         return button;
     }
 
-    // Градиентная панель
+    
     class GradientPanel extends JPanel {
         public GradientPanel(LayoutManager layout) {
             super(layout);

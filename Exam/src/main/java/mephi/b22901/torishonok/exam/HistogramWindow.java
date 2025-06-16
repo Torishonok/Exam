@@ -23,7 +23,7 @@ public class HistogramWindow extends JFrame {
     public static void showHistogram(double[] data, String title, String xAxisLabel, Color color) {
         HistogramDataset dataset = new HistogramDataset();
         dataset.setType(HistogramType.FREQUENCY);
-        dataset.addSeries(title, data, 50); // 50 бинов
+        dataset.addSeries(title, data, 50); 
 
         JFreeChart chart = ChartFactory.createHistogram(
                 title,
@@ -35,7 +35,7 @@ public class HistogramWindow extends JFrame {
         chart.getXYPlot().getDomainAxis().setTickLabelPaint(color);
         chart.getXYPlot().getRangeAxis().setTickLabelPaint(color);
 
-        // Устанавливаем цвет линий сетки
+
         chart.getXYPlot().getDomainAxis().setAxisLinePaint(Color.GRAY);
         chart.getXYPlot().getRangeAxis().setAxisLinePaint(Color.GRAY);
 

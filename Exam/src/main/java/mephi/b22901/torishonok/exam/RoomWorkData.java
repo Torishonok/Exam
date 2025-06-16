@@ -10,7 +10,7 @@ package mephi.b22901.torishonok.exam;
  */
 public class RoomWorkData {
     private final String roomCode;
-    private final double mdi; // исходная мощность дозы
+    private final double mdi; 
     private final boolean isFirstFloor;
 
     public RoomWorkData(String code, double mdi, boolean isFirstFloor) {

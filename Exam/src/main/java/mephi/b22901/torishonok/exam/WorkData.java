@@ -39,7 +39,7 @@ public class WorkData {
         this.workersCount = workersCount;
     }
 
-    // Геттеры
+    
     public int getNumber() { return number; }
     public String getRoomCode() { return roomCode; }
     public String getRoomName() { return roomName; }

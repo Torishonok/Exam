@@ -32,7 +32,7 @@ public class ElementWorkViewer extends JFrame {
             return;
         }
         
-        // Если тип расчёта не экономический — не разрешаем открытие
+        
         if (!"Радиационный".equals(WorkDataMenuWindow.getCurrentCalculationTypeStatic())) {
             JOptionPane.showMessageDialog(this,
                     "Доступно только в радиационном расчёте",
@@ -42,8 +42,6 @@ public class ElementWorkViewer extends JFrame {
         }
         
         
-
-        // Связываем комнаты с работами
         StringBuilder sb = new StringBuilder();
         for (RoomData room : roomList) {
             sb.append("Комната: ").append(room.getRoomName()).append(" (").append(room.getRoomCode()).append(")\n");
