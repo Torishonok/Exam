@@ -11,128 +11,115 @@ package mephi.b22901.torishonok.exam;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
 public class ExcelLoader {
-
     private static List<RoomData> roomDataList = new ArrayList<>();
 
     public static boolean loadExcelFile() {
         roomDataList.clear();
 
-        try (Workbook workbook = new XSSFWorkbook(new FileInputStream("C:\\Users\\vikus\\OneDrive\\Документы\\GitHub\\Exam\\Exam\\resorces\\Вар2_приложение1.xlsx"))) {
-            Sheet sheet = workbook.getSheetAt(0); 
-            if (sheet == null) {
-                System.err.println("Лист 'Лист1' не найден.");
+        try (InputStream is = ExcelLoader.class.getClassLoader().getResourceAsStream("Вар2_приложение1.xlsx")) {
+            if (is == null) {
+                System.err.println(" Файл Вар2_приложение2.xlsx не найден в ресурсах");
                 return false;
             }
 
-            boolean firstRowSkipped = false;
+            try (Workbook workbook = new XSSFWorkbook(is)) {
+                Sheet sheet = workbook.getSheetAt(0); // первый лист
 
-            for (Row row : sheet) {
-                if (!firstRowSkipped) {
-                    firstRowSkipped = true;
-                    continue;
+                if (sheet == null) {
+                    System.err.println("❌ Лист не найден в файле");
+                    return false;
                 }
 
-                
-                if (isRowEmpty(row)) {
-                    System.out.println("Пропущена пустая строка: " + row.getRowNum());
-                    continue;
+                boolean firstRowSkipped = false;
+
+                for (Row row : sheet) {
+                    if (!firstRowSkipped) {
+                        firstRowSkipped = true;
+                        continue;
+                    }
+
+                    if (isRowEmpty(row)) {
+                        System.out.println("⚠️ Пропущена пустая строка");
+                        continue;
+                    }
+
+                    try {
+                        String roomCode = getCellAsString(row.getCell(0));
+                        String roomName = getCellAsString(row.getCell(1));
+                        String location = getCellAsString(row.getCell(2));
+                        double length = getNumericValue(row.getCell(3));
+                        double width = getNumericValue(row.getCell(4));
+                        double height = getNumericValue(row.getCell(5));
+                        double area = getNumericValue(row.getCell(6));
+                        double volume = getNumericValue(row.getCell(7));
+                        String wallMaterial = getCellAsString(row.getCell(10));
+                        String floorMaterial = getCellAsString(row.getCell(11));
+                        String wallCovering = getCellAsString(row.getCell(12));
+                        double wallCoveringArea = getNumericValue(row.getCell(13));
+                        String ceilingCovering = getCellAsString(row.getCell(14));
+                        double ceilingCoveringArea = getNumericValue(row.getCell(15));
+                        String floorCovering = getCellAsString(row.getCell(16));
+                        double floorCoveringArea = getNumericValue(row.getCell(17));
+                        double contaminationWallArea = getNumericValue(row.getCell(18));
+                        double contaminationWallDepth = getNumericValue(row.getCell(19));
+                        double contaminationCeilingArea = getNumericValue(row.getCell(20));
+                        double contaminationCeilingDepth = getNumericValue(row.getCell(21));
+                        double contaminationFloorArea = getNumericValue(row.getCell(22));
+                        double contaminationFloorDepth = getNumericValue(row.getCell(23));
+                        double radiationDoseRate = getNumericValue(row.getCell(24));
+                        double volumetricActivity = getNumericValue(row.getCell(25));
+
+                        roomDataList.add(new RoomData(
+                                roomCode, roomName, location,
+                                length, width, height, area, volume,
+                                wallMaterial, floorMaterial,
+                                wallCovering, wallCoveringArea,
+                                ceilingCovering, ceilingCoveringArea,
+                                floorCovering, floorCoveringArea,
+                                contaminationWallArea, contaminationWallDepth,
+                                contaminationCeilingArea, contaminationCeilingDepth,
+                                contaminationFloorArea, contaminationFloorDepth,
+                                radiationDoseRate, volumetricActivity
+                        ));
+                    } catch (Exception e) {
+                        System.err.println("⚠️ Ошибка чтения строки: " + row.getRowNum());
+                        continue;
+                    }
                 }
 
-                
-                Cell potentialCodeCell = row.getCell(0);
-                if (potentialCodeCell == null || 
-                    (potentialCodeCell.getCellType() != CellType.NUMERIC && 
-                     !potentialCodeCell.getStringCellValue().matches("\\d+"))) {
-                    System.out.println("Пропущена незначимая строка: " + row.getRowNum());
-                    continue;
-                }
+                return !roomDataList.isEmpty();
 
-                try {
-                    String roomCode = getStringValue(row.getCell(0));
-                    String roomName = getStringValue(row.getCell(1));
-                    String location = getStringValue(row.getCell(2));
-
-                    double length = getNumericValue(row.getCell(3));
-                    double width = getNumericValue(row.getCell(4));
-                    double height = getNumericValue(row.getCell(5));
-                    double area = getNumericValue(row.getCell(6));
-                    double volume = getNumericValue(row.getCell(7));
-
-                    String wallMaterial = getStringValue(row.getCell(10));
-                    String floorMaterial = getStringValue(row.getCell(11));
-
-                    String wallCovering = getStringValue(row.getCell(12));
-                    double wallCoveringArea = getNumericValue(row.getCell(13));
-
-                    String ceilingCovering = getStringValue(row.getCell(14));
-                    double ceilingCoveringArea = getNumericValue(row.getCell(15));
-
-                    String floorCovering = getStringValue(row.getCell(16));
-                    double floorCoveringArea = getNumericValue(row.getCell(17));
-
-                    double contaminationWallArea = getNumericValue(row.getCell(18));
-                    double contaminationWallDepth = getNumericValue(row.getCell(19));
-
-                    double contaminationCeilingArea = getNumericValue(row.getCell(20));
-                    double contaminationCeilingDepth = getNumericValue(row.getCell(21));
-
-                    double contaminationFloorArea = getNumericValue(row.getCell(22));
-                    double contaminationFloorDepth = getNumericValue(row.getCell(23));
-
-                    double radiationDoseRate = getNumericValue(row.getCell(24));
-                    double volumetricActivity = getNumericValue(row.getCell(25));
-
-                    roomDataList.add(new RoomData(
-                            roomCode, roomName, location,
-                            length, width, height, area, volume,
-                            wallMaterial, floorMaterial,
-                            wallCovering, wallCoveringArea,
-                            ceilingCovering, ceilingCoveringArea,
-                            floorCovering, floorCoveringArea,
-                            contaminationWallArea, contaminationWallDepth,
-                            contaminationCeilingArea, contaminationCeilingDepth,
-                            contaminationFloorArea, contaminationFloorDepth,
-                            radiationDoseRate, volumetricActivity
-                    ));
-
-                } catch (Exception e) {
-                    System.err.println("Ошибка при чтении строки: " + row.getRowNum());
-                    continue;
-                }
             }
-
-            return !roomDataList.isEmpty();
-
         } catch (IOException e) {
-            System.err.println("Ошибка при открытии файла: " + e.getMessage());
+            System.err.println("❌ Ошибка при открытии файла: " + e.getMessage());
             return false;
         }
     }
 
-    public static List<RoomData> getRoomDataList() {
-        return roomDataList;
-    }
-
-    private static String getStringValue(Cell cell) {
+    // Получаем значение ячейки как строку
+    public static String getCellAsString(Cell cell) {
         if (cell == null) return "";
-        if (cell.getCellType() == CellType.NUMERIC) {
-            return String.valueOf((int) cell.getNumericCellValue());
+        switch (cell.getCellType()) {
+            case STRING:
+                return cell.getStringCellValue().trim();
+            case NUMERIC:
+                return String.valueOf((int) cell.getNumericCellValue());
+            default:
+                return "";
         }
-        return cell.getStringCellValue().trim();
     }
 
-    private static double getNumericValue(Cell cell) {
+    // Получаем числовое значение
+    public static double getNumericValue(Cell cell) {
         if (cell == null) return 0.0;
         if (cell.getCellType() != CellType.NUMERIC) {
             try {
-                return Double.parseDouble(getStringValue(cell).replaceAll(",", "."));
+                String value = getCellAsString(cell).replaceAll(",", ".");
+                return Double.parseDouble(value);
             } catch (NumberFormatException e) {
                 return 0.0;
             }
@@ -140,11 +127,14 @@ public class ExcelLoader {
         return cell.getNumericCellValue();
     }
 
-    
-    private static boolean isRowEmpty(Row row) {
+    public static List<RoomData> getRoomDataList() {
+        return roomDataList;
+    }
+
+    public static boolean isRowEmpty(Row row) {
         if (row == null) return true;
 
-        for (int i = 0; i < 20; i++) { 
+        for (int i = 0; i < 25; i++) {
             Cell cell = row.getCell(i);
             if (cell != null && cell.getCellType() != CellType.BLANK &&
                 !(cell.getCellType() == CellType.STRING && cell.getStringCellValue().trim().isEmpty())) {
