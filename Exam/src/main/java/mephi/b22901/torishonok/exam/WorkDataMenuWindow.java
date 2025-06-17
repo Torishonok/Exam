@@ -65,7 +65,7 @@ public class WorkDataMenuWindow extends JFrame {
 
     private JLabel createTitleLabel() {
         JLabel label = new JLabel("<html><div style='text-align: center;'>Выберите действие для<br>" +
-                calculationType + " расчёта</div></html>", SwingConstants.CENTER);
+                calculationType + " расчёт</div></html>", SwingConstants.CENTER);
         label.setFont(new Font("Segoe UI Semibold", Font.BOLD, 36));
         label.setForeground(theme.getPrimaryColor());
         label.setBorder(BorderFactory.createEmptyBorder(0, 0, 60, 0));
